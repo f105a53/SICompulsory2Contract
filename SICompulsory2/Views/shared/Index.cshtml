@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-16" />
+    <title>Add Acronym</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" 
+          integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" 
+          crossorigin="anonymous"
+    >
+</head>
+<body>
+    <div class="container justify-content-center">
+        <h1 class="row"><text class="col-6">Add acronyms for special characters</text></h1>
+            <form method="post" id="createAcronymForm">
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="acronym">Acronym</label>
+                        <input type="text" id="acronym" class="form-control" name="acronym" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="specialCharacter">Special Character</label>
+                        <input type="text" id="specialCharacter" class="form-control" name="specialCharacter" maxlength="1" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        <table>
+            <thead>
+                <tr>
+                    <th class="mr-2">Acronym</th>
+                    <th>Special character</th>
+                </tr>
+            </thead>
+            <tbody id="specialCharacterstbody">
+
+            </tbody>
+        </table>
+        <hr />
+        <h1>Add term</h1>
+        <form action="/term/addTerm" method="post">
+            <div class="form-group">
+                <label for="term">Term</label>
+                <input id="term" class="form-control col-6" name="term" />
+            </div>
+                <button type="submit" class="btn btn-default">Add term</button>
+        </form>
+        <hr />
+        <label for="searchField">search</label>
+        <br />
+        <input id="searchField" />
+        <table>
+            <thead>
+                <tr>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#searchField').on("change",function () {
+            $.ajax({
+                url: "/search?q=" + $(this).val(),
+                method: "GET"
+            }).done(function (data) {
+                var tbody = $('#tableBody');
+                tbody.html("");
+                console.log("results : ")
+                console.table(data.results);
+                console.log("searchTerms found: ")
+                console.table(data.searchTerms);
+                $.each(data.results, function (index, val) {
+                    let td = $('<td>');
+                    let tr = $('<tr>');
+                    td.append(val);
+                    tr.append(td);
+                    tbody.append(tr);
+                })
+
+            })
+        })
+        $('#createAcronymForm').on("submit", refreshAcronymTable);
+        refreshAcronymTable();
+        function refreshAcronymTable() {
+            $('#specialCharacterstbody').html("");
+                $('#specialCharacterstbody').ready(function () {
+                $.ajax({
+                    url: "/search/acronyms",
+                    method: "GET"
+                }).done(function (data) { 
+                    console.table(data.results);
+                    $.each(data.results, function (index, val) { 
+                        let tr = $('<tr>');
+                        let td0 = $('<td>');
+                        let td1 = $('<td>');
+                        td0.append(val.acronym);
+                        td1.append(val.specialCharacter);
+                        tr.append(td0);
+                        tr.append(td1);
+                        $('#specialCharacterstbody').append(tr);
+                    })
+                })
+
+            })
+        }
+    </script>
+</body>
+</html>
