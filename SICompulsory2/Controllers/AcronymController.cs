@@ -22,13 +22,14 @@ namespace SICompulsory2.Controllers
             return View();
         }
         [HttpPost()]
-        public IActionResult CreateAcronym(string acronym, char specialCharacter)
+        public async Task<JsonResult> CreateAcronymAsync(string acronym, char specialCharacter)
         {
             try
             {
-                _db.SpecialCharacters.Add(new SpecialCharacters { Acronym = acronym, SpecialCharacter = (int)specialCharacter });
-                _db.SaveChanges();
-                return View("index");
+                var spc = new SpecialCharacters { Acronym = acronym, SpecialCharacter = (int)specialCharacter };
+                _db.SpecialCharacters.Add(spc);
+                await _db.SaveChangesAsync();
+                return Json(new { success = true, spc = new {acronym = spc.Acronym, specialCharacter = char.ConvertFromUtf32(specialCharacter) } } );
             }
             catch (Exception ex) { 
                 return Json(new { success = false,exception = ex });

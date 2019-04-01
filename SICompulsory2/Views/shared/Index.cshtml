@@ -1,21 +1,48 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-16" />
+    <meta charset="utf-8" />
     <title>Add Acronym</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" 
           integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" 
           crossorigin="anonymous"
     >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
     <style>
-        *{
-            font-family:"Comic Sans MS";
+        h1 {
+            font-family: Algerian !important;
+            padding-bottom:1.5rem;
+        }
+        
+        *:not(text){
+            font-family:'Comic Sans MS'
+        }
+        .tableWrapper {
+            border: 1px solid black;
+            border-radius: 30px !important;
+            width:50%;
+            padding:3rem;
+            padding-top:1.5rem;
+            margin-top:3rem;
+
+        }
+        .tableWrapper>table{
+            width:100%
+        }
+        .form-group{
+            margin-bottom: .2rem!important;
+        }
+        th{
+            padding: 0.5rem!important;
+            font-size:18px;
+            border-radius:5px;
         }
         tbody>tr>td{
             padding:1px;
         }
         table{
             text-align:center;
+
         }
         tbody>tr{
             border-bottom:1px solid black;
@@ -27,134 +54,226 @@
             background-color: #DDD
         }
         .btn {
-            background-color: #DDD;
             border: 1px solid black;
             transition: background-color ease-in-out .7s;
-            transition: color ease-in-out .7s;
+            font-weight:100!important;
+            word-spacing:5px!important;
+           letter-spacing:2px;
+            
         }
             .btn:hover{
-                color:#DDD;
-                background-color:#222;
+                background-color:#d0d0EE;
             }
         body{
             background-color:lightgray;
         }
         input {
-            background-color: #888 !important;
+            background-color: lightgray !important;
             border: 1px solid black !important;
-            color: white !important;
             -webkit-transition: all .7s ease-in-out !important;
             -moz-transition: all .7s ease-in-out !important;
             -ms-transition: all .7s ease-in-out !important;
             -o-transition: all .7s ease-in-out !important;
             transition: all .7s ease-in-out !important;
             text-align:center!important;
+            opacity: .8;
+            box-shadow:1px 1px;
         }
 
             input:focus{
-                background-color:ghostwhite!important;
-                color:black!important;
+                background-color:#eee!important;
+                color: black!important;
             }
             input:hover {
-                background-color: ghostwhite !important;
-                color: black !important;
-            }
-            input::placeholder{
-                color:#ccc!important;
-            }
-            input:hover::placeholder{
-                color:#aaa!important;
+                background-color:#eee!important;
                 
             }
-
+            input::placeholder{
+                color:#444!important;
+            }
+        .block {
+            padding-top: 25px ;
+            padding-bottom: 75px ;
+            min-height: 300px;
+        }
+            .block:nth-child(2n+1) {
+                background-color: #bbb;
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+            .block:last-child{
+                padding-bottom:50px;
+            }
     </style>
 </head>
 <body>
     <center>
 
-    <div class="container justify-content-center pb-5 m-3 m-auto">
-        <h1 class=""><text class="col-6">Add acronyms for special characters</text></h1>
-            <form method="post" id="createAcronymForm">
-                <div class="row col-6 pl-0">
+        <div class="block">
+            <div class="container justify-content-center pb-5 m-3 m-auto">
+            <h1 class=""><text class="col-6">Add acronyms for special characters</text></h1>
+                <div class="row col-6 pl-0 pr-0">
                     <div class="form-group col-6 pl-0">
-                        <input type="text" id="acronym" class="form-control" name="acronym" autocomplete="off" placeholder="Acronym"/>
+                        <input type="text" id="acronym" class="form-control" name="acronym" autocomplete="off" placeholder="Acronym" />
                     </div>
                     <div class="form-group col-6 pr-0">
-                        <input type="text" id="specialCharacter" class="form-control" name="specialCharacter" maxlength="1" autocomplete="off"placeholder="SpecialCharacter"/>
+                        <input type="text" id="specialCharacter" class="form-control" name="specialCharacter" maxlength="1" autocomplete="off" placeholder="Special Character" />
                     </div>
                 </div>
-                <button type="submit" class="btn btn-default col-6">Submit</button>
-            </form>
-        <table class="col-6">
-            <thead>
-                <tr>
-                    <th class="p-3">Acronym</th>
-                    <th class="p-3">Special character</th>
-                </tr>
-            </thead>
-            <tbody id="specialCharacterstbody">
-
-            </tbody>
-        </table>
-        <hr />
-        <h1>Add term</h1>
-        <form action="/term/addTerm" method="post" ajax="true">
-            <div class="form-group">
-                <input id="term" class="form-control col-6" name="term" autocomplete="off" placeholder="Term"/>
+                <button type="button"  role="button" onClick="submitCreateAcronymForm()" class="btn btn-default col-6">Create Acronym</button>
+                <div class="tableWrapper">
+                    <table class="">
+                        <thead>
+                            <tr>
+                                <th class="">Acronym</th>
+                                <th class="">Special character</th>
+                            </tr>
+                        </thead>
+                        <tbody id="specialCharacterstbody"></tbody>
+                    </table>
+                </div>
             </div>
-                <button type="submit" class="btn btn-default col-6">Add term</button>
-        </form>
-        <hr />
-        <h1>Search</h1>
-        <br />
-
-        <div class="form-group">
-            <input id="searchField" class="form-control col-6" placeholder="Search" />
         </div>
-        <table class="col-6">
-            <thead>
-                <tr>
-                    <th>Text</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
+        <div class="block" >
+            <h1>Add term</h1>
+                <div class="form-group">
+                    <input id="term" class="form-control col-6" name="term" autocomplete="off" placeholder="Term" />
+                </div>
+            <button type="button" role="button" class="btn btn-default col-6" onclick="submitTermForm()">Add term</button>
+        </div>
+        <div class="block" >
+            <h1>Search</h1>
+            <div class="form-group">
+                <input id="searchField" class="form-control col-6" placeholder="Search" />
+            </div>
+            <div class="tableWrapper">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
     </center>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.min.js"></script>
     <script>
         function search() {
+            let benchMark = 'search' + $('#searchField').val();
+            console.time(benchMark )
             $.ajax({
                 url: "/search?q=" + $('#searchField').val(),
                 method: "GET"
             }).done(function (data) {
                 var tbody = $('#tableBody');
-                tbody.html("");
-                console.log("results : ")
-                console.table(data.results);
-                console.log("searchTerms found: ")
+                let html = "";
                 console.table(data.searchTerms);
                 $.each(data.results, function (index, val) {
                     let td = $('<td>');
                     let tr = $('<tr>');
                     td.append(val);
                     tr.append(td);
-                    tbody.append(tr);
+                    html += tr[0].outerHTML;
                 })
 
+                tbody.html("");
+                tbody.append(html);
+                console.timeEnd(benchMark );
             })
         }
+        function submitCreateAcronymForm() {
+            console.time('createAcronym')
+            $.ajax({
+                url: "",
+                method: "POST",
+                data: {
+                    acronym: $('#acronym').val(),
+                    specialCharacter: $('#specialCharacter').val()
+                }
+            }).done(function (data) {
+                if (data.success) {
+                    console.log(data);
+                    let td0 = $('<td>');
+                    let td1 = $('<td>');
+                    let tr = $('<tr>');
+                    td0.append(data.spc.acronym);
+                    td1.append(data.spc.specialCharacter);
+                    tr.append(td0);
+                    tr.append(td1);
+                    $('#specialCharacterstbody').append(tr);
+                    Swal.fire({
+                        title: "Acronym created",
+                        type: "success",
+                        toast: true,
+                        text: "You can now use the special character in your searches instead of the acronym",
+                        timer: 2000,
+                        position: "top-end",
+                        showConfirmButton: false,
+                    });
+                } else { 
+                    Swal.fire({
+                        title: "Error",
+                        type: "error",
+                        toast: true,
+                        text: "Check if acronym already exists.\n The combination of special character and acronym must be unique",
+                        timer: 4000,
+                        position: "top-end",
+                        showConfirmButton: false,
+                    })
+                }
+                console.timeEnd('createAcronym');
+            })
 
+        }
+        function submitTermForm() {
+            console.time('submitTerm')
+            console.log("submite term form function hitted");
+            $.ajax({
+                url: "/term/addTerm",
+                method: "POST",
+                data: {
+                    term: $('#term').val()
+                }
+            }).done(function (data) {
+                console.table(data);
+                if (data.success) {
+                    Swal.fire({
+                        title: "Term created",
+                        type: "success",
+                        text: "you can now search for the term",
+                        toast: true,
+                        timer: 3000,
+                        position: "top-end",
+                        showConfirmButton: false,
+                    })
+                } else { 
+                    Swal.fire({
+                        title: "Error",
+                        type: "error",
+                        text: "Something went wrong, maybe term already exists, or there's no database connection",
+                        toast: true,
+                        timer: 4000,
+                        position: "top-end",
+                        showConfirmButton: false,
+                    })
+                }
+                console.timeEnd('submitTerm')
+            });
+
+        }
         $('#searchField').on("change",search)
-        $('#createAcronymForm').on("submit", refreshAcronymTable);
-            console.log('document ready')
-            refreshAcronymTable();
+        refreshAcronymTable();
         search();
 
         function refreshAcronymTable() {
+            console.time("refreshAcronymTable");
             $('#specialCharacterstbody').html("");
                 $('#specialCharacterstbody').ready(function () {
                 $.ajax({
@@ -172,9 +291,11 @@
                         tr.append(td1);
                         $('#specialCharacterstbody').append(tr);
                     })
+                    console.timeEnd("refreshAcronymTable");
                 })
 
             })
+
         }
     </script>
 </body>

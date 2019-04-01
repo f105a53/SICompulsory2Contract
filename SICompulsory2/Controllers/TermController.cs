@@ -16,11 +16,18 @@ namespace SICompulsory2.Controllers
             _db = db;
         }
         [HttpPost("addTerm")]
-        public async Task<IActionResult> addTerm(string term)
+        public async Task<IActionResult> AddTerm(string term)
         {
-            _db.Terms.Add(new Term { Text = term });
-            _db.SaveChanges();
-            return View("index");
+            if (!string.IsNullOrEmpty(term))
+            {
+                try
+                {
+                    _db.Terms.Add(new Term { Text = term });
+                    _db.SaveChanges();
+                    return Json(new { success = true, term = new { Text = term } });
+                } catch (Exception) { return Json(new { succeess = false }); }
+            }
+            else return Json(new { success = false });
         }
     }
 }
