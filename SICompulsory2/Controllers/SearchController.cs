@@ -32,19 +32,19 @@ namespace SICompulsory2.Controllers
         [HttpGet("")]
         public async Task<JsonResult> GetAsync(string q)
         {
-            if (q == null) // if no parameter return all
-                return Json(new { results = _db.Terms.Select(x => x.Text) });
 
             var term = q;
             IList<string> acronyms = new List<string>();
+            if (q == null) // if no parameter return all
+                return Json(
+                    new { results = _db.Terms.Select(x => new {
+                            text = x.Text,
+                            score = x.DistanceFrom("", acronyms.AsEnumerable() )
+                        }).OrderBy(x => x.score)
+                    });
             await _db.SpecialCharacters.Where(x =>
                 term.Contains(char.ConvertFromUtf32(x.SpecialCharacter)) //find all specialcharacters in the term
             ).ForEachAsync(x => {
-                //foreach special character in the word add a word with the special character replaced with the acronym
-                //string[] acronymsFound = acronyms.AsEnumerable().ToArray();
-                //foreach (string s in acronymsFound)
-                //    GenerateAllVariationsWithReplacement(s, char.ConvertFromUtf32(x.SpecialCharacter),x.Acronym , ref acronyms);
-
                 GenerateAllVariationsWithReplacement(term, char.ConvertFromUtf32(x.SpecialCharacter), x.Acronym, ref acronyms);
             });
             await _db.SpecialCharacters.Where(x =>
@@ -63,10 +63,16 @@ namespace SICompulsory2.Controllers
             foreach (string word in acronyms)
                 sql += (" OR text like " + "'%" + word + "%'");
 
-            var results = _db.Terms.FromSql(sql);
+            var results = 
+                _db.Terms.FromSql(sql)
+                    .Select(x => new {
+                        text = x.Text,
+                        score = x.DistanceFrom(term,acronyms)
+                    })
+                    .OrderBy(x => x.score);
 
             return Json(new {
-                results = results.OrderBy(x => x.Text),
+                results,
                 searchTerms = acronyms
             });
         }

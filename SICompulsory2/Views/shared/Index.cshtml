@@ -176,10 +176,14 @@
                 let html = "";
                 console.table(data.searchTerms);
                 $.each(data.results, function (index, val) {
-                    let td = $('<td>');
+                    let td0 = $('<td>');
+                    let td1 = $('<td>');
                     let tr = $('<tr>');
-                    td.append(val);
-                    tr.append(td);
+                    td0.append(val.text);
+                    td1.append(val.score);
+                    tr.append(td0);
+                    tr.append(td1)
+
                     html += tr[0].outerHTML;
                 })
 
